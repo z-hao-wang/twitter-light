@@ -17,6 +17,7 @@
 		AF64315C1A940B680053D5B3 /* TwitterClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF64315B1A940B680053D5B3 /* TwitterClient.swift */; };
 		AFCBC2231A9464AE002371B4 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFCBC2221A9464AE002371B4 /* User.swift */; };
 		AFCBC2251A946531002371B4 /* Tweet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFCBC2241A946531002371B4 /* Tweet.swift */; };
+		AFCBC2271A9470A4002371B4 /* TimelineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFCBC2261A9470A4002371B4 /* TimelineViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		AF64315D1A940B9D0053D5B3 /* twitter-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "twitter-Bridging-Header.h"; sourceTree = "<group>"; };
 		AFCBC2221A9464AE002371B4 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		AFCBC2241A946531002371B4 /* Tweet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tweet.swift; sourceTree = "<group>"; };
+		AFCBC2261A9470A4002371B4 /* TimelineViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimelineViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +108,7 @@
 				AFCBC2241A946531002371B4 /* Tweet.swift */,
 				AF6431591A940AF90053D5B3 /* LoginViewController.swift */,
 				AF64313D1A940A290053D5B3 /* Main.storyboard */,
+				AFCBC2261A9470A4002371B4 /* TimelineViewController.swift */,
 				AF6431401A940A290053D5B3 /* Images.xcassets */,
 				AF6431421A940A290053D5B3 /* LaunchScreen.xib */,
 				AF6431371A940A290053D5B3 /* Supporting Files */,
@@ -295,6 +298,7 @@
 				AF64315A1A940AF90053D5B3 /* LoginViewController.swift in Sources */,
 				AF64315C1A940B680053D5B3 /* TwitterClient.swift in Sources */,
 				AF64313A1A940A290053D5B3 /* AppDelegate.swift in Sources */,
+				AFCBC2271A9470A4002371B4 /* TimelineViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

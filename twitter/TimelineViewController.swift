@@ -1,5 +1,5 @@
 //
-//  LoginViewController.swift
+//  TimelineViewController.swift
 //  twitter
 //
 //  Created by Hao Wang on 2/17/15.
@@ -8,22 +8,12 @@
 
 import UIKit
 
-class LoginViewController: UIViewController {
+class TimelineViewController: UIViewController {
 
-    @IBOutlet weak var loginButton: UIButton!
-    
-    @IBAction func onLogin(sender: AnyObject) {
-        TwitterClient.getInstance.loginWithCompletion { (user, error) -> Void in
-            if let err = error {
-                println("failed")
-            } else {
-                println("success \(user!.name!)");
-                self.performSegueWithIdentifier("loginSegue", sender: self)
-            }
-        }
-    }
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        // Do any additional setup after loading the view.
     }
 
     override func didReceiveMemoryWarning() {

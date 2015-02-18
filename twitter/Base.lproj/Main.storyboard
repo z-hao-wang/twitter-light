@@ -30,11 +30,30 @@
                     </view>
                     <connections>
                         <outlet property="loginButton" destination="FIo-Fl-L9e" id="mCI-aO-evU"/>
+                        <segue destination="70C-pw-zTj" kind="modal" identifier="loginSegue" id="ppJ-Ma-u2O"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="74" y="129"/>
+        </scene>
+        <!--Timeline View Controller-->
+        <scene sceneID="CDN-oB-GqL">
+            <objects>
+                <viewController storyboardIdentifier="tweetsViewController" id="70C-pw-zTj" customClass="TimelineViewController" customModule="twitter" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="pMx-TJ-kLr"/>
+                        <viewControllerLayoutGuide type="bottom" id="K5s-Tw-e64"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="GaA-rT-qZo">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="XMJ-Ld-9NL" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="510" y="129"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

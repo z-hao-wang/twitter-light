@@ -12,10 +12,16 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    var storyboard = UIStoryboard(name: "Main", bundle: nil)
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        if User.currentUser != nil {
+            // Go to the timeline
+            println("Current user detected: \(User.currentUser!.name!)")
+            var tweetsController = storyboard.instantiateViewControllerWithIdentifier("tweetsViewController") as UIViewController
+            window?.rootViewController = tweetsController
+        }
         return true
     }
 
@@ -42,31 +48,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject?) -> Bool {
-        TwitterClient.getInstance.fetchAccessTokenWithPath("oauth/access_token", method: "POST", requestToken: BDBOAuth1Credential(queryString: url.query), success: { (accessToken: BDBOAuth1Credential!) -> Void in
-            println("Got the accesss token")
-            TwitterClient.getInstance.requestSerializer.saveAccessToken(accessToken)
-            TwitterClient.getInstance.GET("1.1/account/verify_credentials.json", parameters: nil, success: { (opreation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
-                //println("Verify Success user: \(response)")
-                var user = User(dictionary: response as NSDictionary)
-                println("user: \(user.name!)")
-            }, failure: { (opration: AFHTTPRequestOperation!, error: NSError!) -> Void in
-                println("Failed to verify")
-            })
-            
-            TwitterClient.getInstance.GET("1.1/statuses/home_timeline.json", parameters: nil, success: { (opreation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
-                //println("Home timeline Success: \(response)")
-                var tweets = Tweet.tweetsWithArray(response as [NSDictionary])
-                for tweet in tweets {
-                    println("tweet: \(tweet.text!)")
-                }
-            }, failure: { (opration: AFHTTPRequestOperation!, error: NSError!) -> Void in
-                    //println("Failed to home_timeline.json")
-                    //var tweet = User(dictionary: response as NSDictionary)
-                    
-            })
-        }) { (error: NSError!) -> Void in
-            println("failed to receive accesss token")
-        }
+        // Check if this is twitter client
+        TwitterClient.getInstance.openURL(url)
         return true
     }
 
