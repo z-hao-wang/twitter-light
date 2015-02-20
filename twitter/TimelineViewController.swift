@@ -12,6 +12,8 @@ class TimelineViewController: UIViewController, UITableViewDelegate, UITableView
 
     @IBOutlet weak var tableView: UITableView!
     var tweets:[Tweet]?
+    var refreshControl:UIRefreshControl?
+    
     @IBAction func onLogout(sender: AnyObject) {
         User.currentUser?.logout()
     }
@@ -19,20 +21,28 @@ class TimelineViewController: UIViewController, UITableViewDelegate, UITableView
     @IBAction func onCompose(sender: AnyObject) {
         self.performSegueWithIdentifier("composeSegue", sender: self)
     }
+    
     func fetch() {
         TwitterClient.getInstance.fetchTweetsWithCompletion { (tweets, error) -> () in
             if error == nil {
                 self.tweets = tweets
                 self.tableView.reloadData()
+                if let rc = self.refreshControl {
+                    self.refreshControl!.endRefreshing()
+                }
             }
         }
     }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         fetch()
         tableView.estimatedRowHeight = 92.0
         tableView.rowHeight = UITableViewAutomaticDimension
-        // Do any additional setup after loading the view.
+        
+        refreshControl = UIRefreshControl()
+        refreshControl?.addTarget(self, action: "fetch", forControlEvents: UIControlEvents.ValueChanged)
+        tableView.insertSubview(refreshControl!, atIndex: 0)
     }
 
     override func didReceiveMemoryWarning() {
@@ -42,8 +52,11 @@ class TimelineViewController: UIViewController, UITableViewDelegate, UITableView
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var cell = tableView.dequeueReusableCellWithIdentifier("tweetCell") as TweetTableViewCell
-        cell.userName.text = tweets![indexPath.row].user!.name
-        cell.tweetText.text = tweets![indexPath.row].text
+        let tweet = tweets![indexPath.row]
+        cell.userName.text = tweet.user!.name
+        cell.tweetText.text = tweet.text
+        cell.timeStamp.text = tweet.createdTimeToNow()
+        cell.profileImage.setImageWithURL(NSURL(string: tweet.user!.profileImageURL!))
         return cell
     }
     
@@ -53,15 +66,24 @@ class TimelineViewController: UIViewController, UITableViewDelegate, UITableView
         }
         return 0
     }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        
+    }
 
-    /*
+    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        let isCell = (sender is TweetTableViewCell ? true : false)
+        if isCell {
+            var detailsViewController = segue.destinationViewController as TweetDetailViewController
+            if let indexPath = tableView.indexPathForCell(sender as UITableViewCell) {
+                detailsViewController.tweet = self.tweets![indexPath.row]
+            }
+        }
     }
-    */
+
 
 }

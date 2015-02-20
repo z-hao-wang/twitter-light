@@ -20,6 +20,7 @@
 		AFCBC2271A9470A4002371B4 /* TimelineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFCBC2261A9470A4002371B4 /* TimelineViewController.swift */; };
 		AFF9DBE61A96C6BF00497F49 /* TweetTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFF9DBE51A96C6BF00497F49 /* TweetTableViewCell.swift */; };
 		AFF9DBE81A96EED500497F49 /* ComposeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFF9DBE71A96EED500497F49 /* ComposeViewController.swift */; };
+		AFF9DBEE1A96F58B00497F49 /* TweetDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFF9DBED1A96F58B00497F49 /* TweetDetailViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,7 @@
 		AFCBC2261A9470A4002371B4 /* TimelineViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimelineViewController.swift; sourceTree = "<group>"; };
 		AFF9DBE51A96C6BF00497F49 /* TweetTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweetTableViewCell.swift; sourceTree = "<group>"; };
 		AFF9DBE71A96EED500497F49 /* ComposeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposeViewController.swift; sourceTree = "<group>"; };
+		AFF9DBED1A96F58B00497F49 /* TweetDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweetDetailViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,6 +161,7 @@
 				AFCBC2261A9470A4002371B4 /* TimelineViewController.swift */,
 				AFF9DBE71A96EED500497F49 /* ComposeViewController.swift */,
 				AF6431591A940AF90053D5B3 /* LoginViewController.swift */,
+				AFF9DBED1A96F58B00497F49 /* TweetDetailViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -333,6 +336,7 @@
 			files = (
 				AFCBC2231A9464AE002371B4 /* User.swift in Sources */,
 				AFCBC2251A946531002371B4 /* Tweet.swift in Sources */,
+				AFF9DBEE1A96F58B00497F49 /* TweetDetailViewController.swift in Sources */,
 				AF64315A1A940AF90053D5B3 /* LoginViewController.swift in Sources */,
 				AFF9DBE81A96EED500497F49 /* ComposeViewController.swift in Sources */,
 				AF64315C1A940B680053D5B3 /* TwitterClient.swift in Sources */,

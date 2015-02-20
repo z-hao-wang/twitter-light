@@ -12,9 +12,14 @@ class TweetTableViewCell: UITableViewCell {
 
     @IBOutlet weak var tweetText: UILabel!
     @IBOutlet weak var userName: UILabel!
+    
+    @IBOutlet weak var profileImage: UIImageView!
+    
+    @IBOutlet weak var timeStamp: UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        self.selectionStyle = .None
     }
 
     override func setSelected(selected: Bool, animated: Bool) {
