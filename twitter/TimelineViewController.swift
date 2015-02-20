@@ -8,17 +8,19 @@
 
 import UIKit
 
-class TimelineViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class TimelineViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, replyDelegate {
 
     @IBOutlet weak var tableView: UITableView!
     var tweets:[Tweet]?
     var refreshControl:UIRefreshControl?
+    var replyTweet: Tweet?
     
     @IBAction func onLogout(sender: AnyObject) {
         User.currentUser?.logout()
     }
     
     @IBAction func onCompose(sender: AnyObject) {
+        replyTweet = nil
         self.performSegueWithIdentifier("composeSegue", sender: self)
     }
     
@@ -52,11 +54,9 @@ class TimelineViewController: UIViewController, UITableViewDelegate, UITableView
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var cell = tableView.dequeueReusableCellWithIdentifier("tweetCell") as TweetTableViewCell
-        let tweet = tweets![indexPath.row]
-        cell.userName.text = tweet.user!.name
-        cell.tweetText.text = tweet.text
-        cell.timeStamp.text = tweet.createdTimeToNow()
-        cell.profileImage.setImageWithURL(NSURL(string: tweet.user!.profileImageURL!))
+        cell.tweet = tweets![indexPath.row]
+        cell.delegate = self
+        cell.update()
         return cell
     }
     
@@ -70,7 +70,11 @@ class TimelineViewController: UIViewController, UITableViewDelegate, UITableView
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
     }
-
+    
+    func onReply(tweet: Tweet) {
+        replyTweet = tweet
+        self.performSegueWithIdentifier("composeSegue", sender: self)
+    }
     
     // MARK: - Navigation
 
@@ -82,6 +86,12 @@ class TimelineViewController: UIViewController, UITableViewDelegate, UITableView
             if let indexPath = tableView.indexPathForCell(sender as UITableViewCell) {
                 detailsViewController.tweet = self.tweets![indexPath.row]
             }
+        }
+        
+        let isCompose = (sender is UIViewController ? true : false)
+        if (isCompose) {
+            var vc = segue.destinationViewController as ComposeViewController
+            vc.replyTweet = replyTweet
         }
     }
 

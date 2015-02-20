@@ -33,12 +33,12 @@ class TweetDetailViewController: UIViewController {
     }
    
     @IBAction func onReply(sender: AnyObject) {
-        
+        self.performSegueWithIdentifier("composeSegue2", sender: self)
     }
     
     @IBAction func onRetweet(sender: AnyObject) {
         TwitterClient.getInstance.reTweetWithId(tweet!.id!, complete: { (error) -> () in
-            if error != nil {
+            if error == nil {
                 //success
                 self.closeView()
             } else {
@@ -49,7 +49,7 @@ class TweetDetailViewController: UIViewController {
     
     @IBAction func onFavorite(sender: AnyObject) {
         TwitterClient.getInstance.favoriteWithId(tweet!.id!, complete: { (error) -> () in
-            if error != nil {
+            if error == nil {
                 //success
                 println("fav success")
             } else {

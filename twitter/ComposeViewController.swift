@@ -12,10 +12,18 @@ class ComposeViewController: UIViewController {
 
 
     @IBOutlet weak var textField: UITextView!
+    var replyTweet: Tweet?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        if let reply = replyTweet {
+            println("Reply Tweet \(reply.id!)")
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -26,18 +34,24 @@ class ComposeViewController: UIViewController {
     func showErrorWithText(message: String) {
         println("Error: \(message)")
     }
+    
+    func completeTweet(error: NSError!) -> () {
+        if error == nil {
+            self.dismissViewControllerAnimated(true, completion: { () -> Void in
+                self.showErrorWithText("Tweet Success")
+            })
+        } else {
+            self.showErrorWithText("Tweet Failed")
+        }
+    }
 
     @IBAction func didTweet(sender: AnyObject) {
         if !textField.text.isEmpty {
-            TwitterClient.getInstance.tweetWithText(textField.text, complete: { (error) -> () in
-                if error == nil {
-                    self.dismissViewControllerAnimated(true, completion: { () -> Void in
-                        
-                    })
-                } else {
-                    self.showErrorWithText("Tweet Failed")
-                }
-            })
+            if let reply = replyTweet {
+                TwitterClient.getInstance.replyTweet(textField.text, id: reply.id!, complete: completeTweet)
+            } else {
+                TwitterClient.getInstance.tweetWithText(textField.text, complete: completeTweet)
+            }
         } else {
             self.showErrorWithText("Tweet is Empty")
         }

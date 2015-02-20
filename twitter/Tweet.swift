@@ -15,12 +15,16 @@ class Tweet: NSObject {
     var createdAtString: String?
     var createdAt: NSDate?
     var createdToNow:String?
+    var favorited: Int?
+    var retweeted: Int?
     
     init(dictionary: NSDictionary) {
         user = User(dictionary: dictionary["user"] as NSDictionary)
         text = dictionary["text"] as? String
         createdAtString = dictionary["created_at"] as? String
         id = dictionary["id"] as? Int
+        favorited = dictionary["favorited"] as? Int
+        retweeted = dictionary["retweeted"] as? Int
     }
     
     class func tweetsWithArray(array: [NSDictionary]) -> [Tweet] {
