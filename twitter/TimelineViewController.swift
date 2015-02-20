@@ -16,6 +16,9 @@ class TimelineViewController: UIViewController, UITableViewDelegate, UITableView
         User.currentUser?.logout()
     }
     
+    @IBAction func onCompose(sender: AnyObject) {
+        self.performSegueWithIdentifier("composeSegue", sender: self)
+    }
     func fetch() {
         TwitterClient.getInstance.fetchTweetsWithCompletion { (tweets, error) -> () in
             if error == nil {
