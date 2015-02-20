@@ -16,6 +16,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "userDidLogout", name: userDidLogoutNotification, object: nil)
         if User.currentUser != nil {
             // Go to the timeline
             println("Current user detected: \(User.currentUser!.name!)")
@@ -23,6 +25,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             window?.rootViewController = tweetsController
         }
         return true
+    }
+    
+    func userDidLogout() {
+        var vc = storyboard.instantiateViewControllerWithIdentifier("loginViewController") as UIViewController
+        window?.rootViewController = vc
     }
 
     func applicationWillResignActive(application: UIApplication) {

@@ -9,7 +9,9 @@
 import UIKit
 
 var _currentUser: User? = nil
-
+var currentUserKey = "_currentUser"
+let userDidLoginNotification = "UserDidLoginNotification"
+let userDidLogoutNotification = "UserDidLogoutNotification"
 class User: NSObject {
     
     var name: String?
@@ -26,11 +28,17 @@ class User: NSObject {
         tagline = dictionary["description"]  as? String
     }
     
+    func logout() {
+        User.currentUser = nil
+        TwitterClient.getInstance.requestSerializer.removeAccessToken()
+        NSNotificationCenter.defaultCenter().postNotificationName(userDidLogoutNotification, object: nil)
+    }
+    
     class var currentUser: User? {
         get {
             if _currentUser == nil {
                 //try get from NSUserDefaults
-                var data = NSUserDefaults.standardUserDefaults().objectForKey("_currentUser") as? NSData
+                var data = NSUserDefaults.standardUserDefaults().objectForKey(currentUserKey) as? NSData
                 if data != nil {
                     var dictionary = NSJSONSerialization.JSONObjectWithData(data!, options: nil, error: nil) as? NSDictionary
                     _currentUser = User(dictionary: dictionary!)

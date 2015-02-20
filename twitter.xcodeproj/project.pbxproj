@@ -18,6 +18,7 @@
 		AFCBC2231A9464AE002371B4 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFCBC2221A9464AE002371B4 /* User.swift */; };
 		AFCBC2251A946531002371B4 /* Tweet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFCBC2241A946531002371B4 /* Tweet.swift */; };
 		AFCBC2271A9470A4002371B4 /* TimelineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFCBC2261A9470A4002371B4 /* TimelineViewController.swift */; };
+		AFF9DBE61A96C6BF00497F49 /* TweetTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFF9DBE51A96C6BF00497F49 /* TweetTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		AFCBC2221A9464AE002371B4 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		AFCBC2241A946531002371B4 /* Tweet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tweet.swift; sourceTree = "<group>"; };
 		AFCBC2261A9470A4002371B4 /* TimelineViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimelineViewController.swift; sourceTree = "<group>"; };
+		AFF9DBE51A96C6BF00497F49 /* TweetTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweetTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +110,7 @@
 				AFCBC2241A946531002371B4 /* Tweet.swift */,
 				AF6431591A940AF90053D5B3 /* LoginViewController.swift */,
 				AF64313D1A940A290053D5B3 /* Main.storyboard */,
+				AFF9DBE51A96C6BF00497F49 /* TweetTableViewCell.swift */,
 				AFCBC2261A9470A4002371B4 /* TimelineViewController.swift */,
 				AF6431401A940A290053D5B3 /* Images.xcassets */,
 				AF6431421A940A290053D5B3 /* LaunchScreen.xib */,
@@ -299,6 +302,7 @@
 				AF64315C1A940B680053D5B3 /* TwitterClient.swift in Sources */,
 				AF64313A1A940A290053D5B3 /* AppDelegate.swift in Sources */,
 				AFCBC2271A9470A4002371B4 /* TimelineViewController.swift in Sources */,
+				AFF9DBE61A96C6BF00497F49 /* TweetTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

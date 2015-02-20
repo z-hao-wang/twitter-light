@@ -8,11 +8,27 @@
 
 import UIKit
 
-class TimelineViewController: UIViewController {
+class TimelineViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
+    @IBOutlet weak var tableView: UITableView!
+    var tweets:[Tweet]?
+    @IBAction func onLogout(sender: AnyObject) {
+        User.currentUser?.logout()
+    }
+    
+    func fetch() {
+        TwitterClient.getInstance.fetchTweetsWithCompletion { (tweets, error) -> () in
+            if error == nil {
+                self.tweets = tweets
+                self.tableView.reloadData()
+            }
+        }
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        fetch()
+        tableView.estimatedRowHeight = 92.0
+        tableView.rowHeight = UITableViewAutomaticDimension
         // Do any additional setup after loading the view.
     }
 
@@ -21,6 +37,19 @@ class TimelineViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        var cell = tableView.dequeueReusableCellWithIdentifier("tweetCell") as TweetTableViewCell
+        cell.userName.text = tweets![indexPath.row].user!.name
+        cell.tweetText.text = tweets![indexPath.row].text
+        return cell
+    }
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if tweets != nil {
+            return tweets!.count
+        }
+        return 0
+    }
 
     /*
     // MARK: - Navigation
