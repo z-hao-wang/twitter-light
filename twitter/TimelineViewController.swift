@@ -24,6 +24,10 @@ class TimelineViewController: UIViewController, UITableViewDelegate, UITableView
         self.performSegueWithIdentifier("composeSegue", sender: self)
     }
     
+    func refresh() {
+        tableView.reloadData()
+    }
+    
     func fetch() {
         TwitterClient.getInstance.fetchTweetsWithCompletion { (tweets, error) -> () in
             if error == nil {
