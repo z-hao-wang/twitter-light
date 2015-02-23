@@ -36,6 +36,12 @@ class TimelineViewController: UIViewController, UITableViewDelegate, UITableView
         }
     }
     
+    func tweetSent(notification: NSNotification) {
+        let newTweet:Dictionary<String, Tweet> = notification.userInfo as Dictionary<String, Tweet>
+        self.tweets!.insert(newTweet["tweet"]!, atIndex: 0)
+        self.tableView.reloadData()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         fetch()
@@ -45,8 +51,10 @@ class TimelineViewController: UIViewController, UITableViewDelegate, UITableView
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: "fetch", forControlEvents: UIControlEvents.ValueChanged)
         tableView.insertSubview(refreshControl!, atIndex: 0)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "tweetSent:", name: newTweetNotification, object: nil)
+        
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

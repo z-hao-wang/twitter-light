@@ -11,12 +11,35 @@ import UIKit
 class TweetDetailViewController: UIViewController {
 
     var tweet:Tweet?
-    
+    var faved = false
+    var retweeted = false
+    @IBOutlet weak var username: UILabel!
+    @IBOutlet weak var userImage: UIImageView!
     @IBOutlet weak var tweetText: UILabel!
+    @IBOutlet weak var favoriteButton: UIButton!
+    @IBOutlet weak var retweetButton: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         if let tweetUnwrapped = tweet {
             tweetText.text = tweetUnwrapped.text
+            userImage.setImageWithURL(NSURL(string: tweetUnwrapped.user!.profileImageURL!))
+            username.text = tweetUnwrapped.user!.screenName
+            Utils.toggleRetweetStatus(false, button: retweetButton)
+            if (tweetUnwrapped.retweeted != nil) {
+                if tweet?.retweeted > 0 {
+                    retweeted = true
+                    Utils.toggleRetweetStatus(true, button: retweetButton)
+                }
+            }
+            Utils.toggleFavStatus(false, button: favoriteButton)
+            if (tweetUnwrapped.favorited != nil) {
+                if tweet?.favorited > 0 {
+                    faved = true
+                    Utils.toggleFavStatus(true, button: favoriteButton)
+                }
+            }
+
         }
         // Do any additional setup after loading the view.
     }
@@ -31,15 +54,17 @@ class TweetDetailViewController: UIViewController {
             
         })
     }
-   
+    
     @IBAction func onReply(sender: AnyObject) {
         self.performSegueWithIdentifier("composeSegue2", sender: self)
     }
     
     @IBAction func onRetweet(sender: AnyObject) {
-        TwitterClient.getInstance.reTweetWithId(tweet!.id!, complete: { (error) -> () in
+        TwitterClient.getInstance.reTweetWithId(tweet!.id!, complete: { (response, error) -> () in
             if error == nil {
                 //success
+                self.retweeted = true
+                Utils.toggleRetweetStatus(true, button: self.retweetButton)
                 self.closeView()
             } else {
                 println("retweet failed")
@@ -48,9 +73,10 @@ class TweetDetailViewController: UIViewController {
     }
     
     @IBAction func onFavorite(sender: AnyObject) {
-        TwitterClient.getInstance.favoriteWithId(tweet!.id!, complete: { (error) -> () in
+        TwitterClient.getInstance.favoriteWithId(tweet!.id!, complete: { (response, error) -> () in
             if error == nil {
                 //success
+                Utils.toggleFavStatus(true, button: self.favoriteButton)
                 println("fav success")
             } else {
                 println("fav failed \(error)")

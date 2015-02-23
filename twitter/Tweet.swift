@@ -8,6 +8,8 @@
 
 import UIKit
 
+let newTweetNotification = "NewTweetNofication"
+
 class Tweet: NSObject {
     var id: Int?
     var user: User?

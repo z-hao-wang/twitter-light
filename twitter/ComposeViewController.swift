@@ -25,6 +25,10 @@ class ComposeViewController: UIViewController {
             println("Reply Tweet \(reply.id!)")
         }
     }
+    
+    override func viewDidDisappear(animated: Bool) {
+        replyTweet = nil //clear this value for next compose
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -35,10 +39,20 @@ class ComposeViewController: UIViewController {
         println("Error: \(message)")
     }
     
-    func completeTweet(error: NSError!) -> () {
+    func completeTweet(response: AnyObject!, error: NSError!) -> () {
         if error == nil {
             self.dismissViewControllerAnimated(true, completion: { () -> Void in
                 self.showErrorWithText("Tweet Success")
+                // push tweet object into model
+                if self.replyTweet != nil {
+                   //broadcast an event for new tweet
+                    
+                } else {
+                    
+                }
+                var newTweet: Tweet = Tweet(dictionary: response as NSDictionary)
+                var userInfo: Dictionary<String, Tweet> = ["tweet": newTweet]
+                NSNotificationCenter.defaultCenter().postNotificationName(newTweetNotification, object: nil, userInfo: userInfo)
             })
         } else {
             self.showErrorWithText("Tweet Failed")
@@ -62,6 +76,8 @@ class ComposeViewController: UIViewController {
             
         })
     }
+    
+    
     
     
     /*

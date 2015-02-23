@@ -63,28 +63,28 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
         })
     }
     
-    func postRequest(endPoint: String, params: NSDictionary?, complete: (error: NSError!) -> ()) {
+    func postRequest(endPoint: String, params: NSDictionary?, complete: (response: AnyObject!, error: NSError!) -> ()) {
         self.POST(endPoint, parameters: params, success: { (opreation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
             println(response)
-            complete(error: nil)
+            complete(response: response, error: nil)
         }, failure: { (opration: AFHTTPRequestOperation!, error: NSError!) -> Void in
-                complete(error: error)
+            complete(response: nil, error: error)
         })
     }
     
-    func favoriteWithId(id: Int, complete: (error: NSError!) -> ()) {
+    func favoriteWithId(id: Int, complete: (response: AnyObject!, error: NSError!) -> ()) {
         postRequest("1.1/favorites/create.json", params: ["id": id], complete)
     }
     
-    func replyTweet(text: String, id: Int, complete: (error: NSError!) -> ()) {
+    func replyTweet(text: String, id: Int, complete: (response: AnyObject!, error: NSError!) -> ()) {
         postRequest("1.1/statuses/update.json", params: ["status": text, "in_reply_to_status_id": id], complete)
     }
     
-    func tweetWithText(text: String, complete: (error: NSError!) -> ()) {
+    func tweetWithText(text: String, complete: (response: AnyObject!, error: NSError!) -> ()) {
         postRequest("1.1/statuses/update.json", params: ["status": text], complete: complete)
     }
     
-    func reTweetWithId(id: Int, complete: (error: NSError!) -> ()) {
+    func reTweetWithId(id: Int, complete: (response: AnyObject!, error: NSError!) -> ()) {
         postRequest("1.1/statuses/retweet/" + String(id) + ".json", params: nil, complete: complete)
     }
     /*

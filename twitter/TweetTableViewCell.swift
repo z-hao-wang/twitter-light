@@ -15,6 +15,8 @@ class TweetTableViewCell: UITableViewCell {
 
     var delegate: replyDelegate?
     var tweet: Tweet?
+    var retweeted = false
+    var faved = false
     @IBOutlet weak var tweetText: UILabel!
     @IBOutlet weak var userName: UILabel!
     
@@ -36,16 +38,18 @@ class TweetTableViewCell: UITableViewCell {
             self.tweetText.text = tweetUn.text
             self.timeStamp.text = tweetUn.createdTimeToNow()
             self.profileImage.setImageWithURL(NSURL(string: tweetUn.user!.profileImageURL!))
-            toggleRetweetStatus(false)
+            Utils.toggleRetweetStatus(false, button: retweetButton)
             if (tweet?.retweeted != nil) {
                 if tweet?.retweeted > 0 {
-                    toggleRetweetStatus(true)
+                    retweeted = true
+                    Utils.toggleRetweetStatus(true, button: retweetButton)
                 }
             }
-            toggleFavStatus(false)
+            Utils.toggleFavStatus(false, button: favoriteButton)
             if (tweet?.favorited != nil) {
                 if tweet?.favorited > 0 {
-                    toggleFavStatus(true)
+                    faved = true
+                    Utils.toggleFavStatus(true, button: favoriteButton)
                 }
             }
         }
@@ -56,38 +60,48 @@ class TweetTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
-    
+    /*
     func toggleRetweetStatus(on: Bool) {
+        retweeted = on
         let img = UIImage(named: on ? "retweet_on" : "retweet") as UIImage?
         retweetButton.setImage(img, forState: .Normal)
     }
     
     func toggleFavStatus(on: Bool) {
+        faved = on
         let img = UIImage(named: on ? "favorite_on" : "favorite") as UIImage?
         favoriteButton.setImage(img, forState: .Normal)
     }
-
+*/
     @IBAction func onFavorite(sender: AnyObject) {
-        TwitterClient.getInstance.favoriteWithId(tweet!.id!, complete: { (error) -> () in
-            if error == nil {
-                //success
-                println("fav success")
-                self.toggleFavStatus(true)
-            } else {
-                println("fav failed \(error)")
-            }
-        })
+        if !faved {
+            TwitterClient.getInstance.favoriteWithId(tweet!.id!, complete: { (response, error) -> () in
+                if error == nil {
+                    //success
+                    println("fav success")
+                    self.faved = true
+                    Utils.toggleFavStatus(true, button: self.favoriteButton)
+                } else {
+                    println("fav failed \(error)")
+                }
+            })
+        }
+        
     }
     
     @IBAction func onRetweet(sender: AnyObject) {
-        TwitterClient.getInstance.reTweetWithId(tweet!.id!, complete: { (error) -> () in
-            if error == nil {
-                //success
-                self.toggleRetweetStatus(true)
-            } else {
-                println("retweet failed")
-            }
-        })
+        if !retweeted {
+            TwitterClient.getInstance.reTweetWithId(tweet!.id!, complete: { (response, error) -> () in
+                if error == nil {
+                    //success
+                    self.retweeted = true
+                    Utils.toggleRetweetStatus(true, button: self.retweetButton)
+                } else {
+                    println("retweet failed")
+                }
+            })
+        }
+        
     }
     @IBAction func onReply(sender: AnyObject) {
         delegate?.onReply(tweet!)
