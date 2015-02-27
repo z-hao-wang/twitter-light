@@ -15,6 +15,7 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     @IBOutlet weak var tableView: UITableView!
     var menuBeginOrigin:CGPoint!
     var panGestureBeginOrigin:CGPoint!
+    var delegate:swipeDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +29,8 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     @IBAction func doSwipe(panGestureRecognizer: UIPanGestureRecognizer) {
+        delegate?.processSwipe(panGestureRecognizer)
+        /*
         if let parentVC = self.parentViewController {
             let point = panGestureRecognizer.translationInView(parentVC.view)
             let velocity = panGestureRecognizer.velocityInView(parentVC.view)
@@ -37,17 +40,24 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 self.menuBeginOrigin = self.view.center
                 panGestureBeginOrigin = point
             } else if panGestureRecognizer.state == UIGestureRecognizerState.Changed {
-                println("Gesture changed at: \(self.view.center.x)")
+                println("MenuViewController Gesture changed at: \(point.x)")
                 self.view.center.x = menuBeginOrigin.x + point.x - panGestureBeginOrigin.x
                 if self.view.center.x < -self.view.frame.width / 2.0 {
                     self.view.center.x = -self.view.frame.width / 2.0
                 }
-                //self.timelineView.center.x = menuVC.view.center.x + menuVC.view.frame.width / 2.0
+                if self.view.center.x > self.view.frame.width / 2.0 {
+                    self.view.center.x = self.view.frame.width / 2.0
+                }
+                if let parent = self.parentViewController as? TimelineViewController {
+                    parent.timelineView.center.x = parent.menuVC.view.center.x + parent.menuVC.view.frame.width / 2.0
+                }
+                
             } else if panGestureRecognizer.state == UIGestureRecognizerState.Ended {
                 //snap it on to the side
                 if velocity.x < 0 {
                     UIView.animateWithDuration(menuAnimationDuration, animations: { () -> Void in
                         self.view.center.x = -self.view.frame.width / 2.0
+                        
                         }, completion: { (done: Bool) -> Void in
                             
                     })
@@ -60,9 +70,10 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 }
             }
 
-        }
+        }*/
         
     }
+
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var cell = tableView.dequeueReusableCellWithIdentifier("menuCell") as MenuTableViewCell
         switch indexPath.row {

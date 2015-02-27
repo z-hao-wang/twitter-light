@@ -9,14 +9,18 @@
 import UIKit
 
 let menuAnimationDuration = 0.2
+protocol swipeDelegate {
+    func processSwipe(panGestureRecognizer: UIPanGestureRecognizer)
+}
 
-class TimelineViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, replyDelegate {
+class TimelineViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, replyDelegate, swipeDelegate {
 
     @IBOutlet weak var tableView: UITableView!
     var tweets:[Tweet]?
     var refreshControl:UIRefreshControl?
     var replyTweet: Tweet?
     var menuVC: MenuViewController!
+    var currentViewController: UIViewController!
     @IBOutlet var panGesture: UIPanGestureRecognizer!
     var menuBeginOrigin:CGPoint!
     var panGestureBeginOrigin:CGPoint!
@@ -37,8 +41,7 @@ class TimelineViewController: UIViewController, UITableViewDelegate, UITableView
         tableView.reloadData()
     }
     
-    
-    @IBAction func doSwipe(panGestureRecognizer: UIPanGestureRecognizer) {
+    func processSwipe(panGestureRecognizer: UIPanGestureRecognizer) {
         let point = panGestureRecognizer.translationInView(self.containerView)
         let velocity = panGestureRecognizer.velocityInView(self.containerView)
         
@@ -51,6 +54,10 @@ class TimelineViewController: UIViewController, UITableViewDelegate, UITableView
             menuVC.view.center.x = menuBeginOrigin.x + point.x - panGestureBeginOrigin.x
             if menuVC.view.center.x < -menuVC.view.frame.width / 2.0 {
                 menuVC.view.center.x = -menuVC.view.frame.width / 2.0
+                panGestureBeginOrigin = point //reset start pos
+            } else if menuVC.view.center.x > menuVC.view.frame.width / 2.0 {
+                menuVC.view.center.x = menuVC.view.frame.width / 2.0
+                panGestureBeginOrigin = point //reset start pos
             }
             self.timelineView.center.x = menuVC.view.center.x + menuVC.view.frame.width
         } else if panGestureRecognizer.state == UIGestureRecognizerState.Ended {
@@ -58,8 +65,8 @@ class TimelineViewController: UIViewController, UITableViewDelegate, UITableView
             if velocity.x < 0 {
                 UIView.animateWithDuration(menuAnimationDuration, animations: { () -> Void in
                     self.menuVC.view.center.x = -self.menuVC.view.frame.width / 2.0
-                }, completion: { (done: Bool) -> Void in
-                    
+                    }, completion: { (done: Bool) -> Void in
+                        
                 })
                 
                 UIView.animateWithDuration(menuAnimationDuration, animations: { () -> Void in
@@ -67,20 +74,24 @@ class TimelineViewController: UIViewController, UITableViewDelegate, UITableView
                     }, completion: { (done: Bool) -> Void in
                         
                 })
-
+                
             } else {
                 UIView.animateWithDuration(menuAnimationDuration, animations: { () -> Void in
                     self.menuVC.view.center.x = self.menuVC.view.frame.width / 2.0
-                }, completion: { (done: Bool) -> Void in
+                    }, completion: { (done: Bool) -> Void in
                         
                 })
                 UIView.animateWithDuration(menuAnimationDuration, animations: { () -> Void in
                     self.timelineView.center.x = self.timelineView.frame.width * 1.5
-                }, completion: { (done: Bool) -> Void in
+                    }, completion: { (done: Bool) -> Void in
                         
                 })
             }
         }
+    }
+    
+    @IBAction func doSwipe(panGestureRecognizer: UIPanGestureRecognizer) {
+        processSwipe(panGestureRecognizer)
     }
     
     func fetch() {
@@ -101,10 +112,22 @@ class TimelineViewController: UIViewController, UITableViewDelegate, UITableView
         self.tableView.reloadData()
     }
     
+    func removeViewController() {
+        if self.currentViewController != nil {
+            self.currentViewController.willMoveToParentViewController(nil)
+            self.currentViewController.view.removeFromSuperview()
+            self.currentViewController.didMoveToParentViewController(nil)
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         menuVC = storyboard?.instantiateViewControllerWithIdentifier("hamburgerMenu") as MenuViewController
+        addChildViewController(menuVC)
+        menuVC.delegate = self
         self.containerView.addSubview(menuVC.view)
+        
         menuVC.view.center.x = -menuVC.view.frame.size.width / 2.0
         fetch()
         tableView.estimatedRowHeight = 92.0
