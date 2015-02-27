@@ -9,11 +9,8 @@
 import UIKit
 
 let menuAnimationDuration = 0.2
-protocol swipeDelegate {
-    func processSwipe(panGestureRecognizer: UIPanGestureRecognizer)
-}
 
-class TimelineViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, replyDelegate, swipeDelegate {
+class TimelineViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, replyDelegate {
 
     @IBOutlet weak var tableView: UITableView!
     var tweets:[Tweet]?
@@ -26,7 +23,7 @@ class TimelineViewController: UIViewController, UITableViewDelegate, UITableView
     var panGestureBeginOrigin:CGPoint!
     @IBOutlet var containerView: UIView!
     @IBOutlet weak var timelineView: UIView!
-    
+    var delegate:swipeDelegate?
     
     @IBAction func onLogout(sender: AnyObject) {
         User.currentUser?.logout()
@@ -91,7 +88,7 @@ class TimelineViewController: UIViewController, UITableViewDelegate, UITableView
     }
     
     @IBAction func doSwipe(panGestureRecognizer: UIPanGestureRecognizer) {
-        processSwipe(panGestureRecognizer)
+        self.delegate?.processSwipe(panGestureRecognizer)
     }
     
     func fetch() {
@@ -112,23 +109,10 @@ class TimelineViewController: UIViewController, UITableViewDelegate, UITableView
         self.tableView.reloadData()
     }
     
-    func removeViewController() {
-        if self.currentViewController != nil {
-            self.currentViewController.willMoveToParentViewController(nil)
-            self.currentViewController.view.removeFromSuperview()
-            self.currentViewController.didMoveToParentViewController(nil)
-        }
-    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        menuVC = storyboard?.instantiateViewControllerWithIdentifier("hamburgerMenu") as MenuViewController
-        addChildViewController(menuVC)
-        menuVC.delegate = self
-        self.containerView.addSubview(menuVC.view)
-        
-        menuVC.view.center.x = -menuVC.view.frame.size.width / 2.0
         fetch()
         tableView.estimatedRowHeight = 92.0
         tableView.rowHeight = UITableViewAutomaticDimension

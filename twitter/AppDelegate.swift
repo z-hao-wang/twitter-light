@@ -21,8 +21,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if User.currentUser != nil {
             // Go to the timeline
             println("Current user detected: \(User.currentUser!.name!)")
-            var tweetsController = storyboard.instantiateViewControllerWithIdentifier("tweetsViewController") as UIViewController
-            window?.rootViewController = tweetsController
+            var menuController = storyboard.instantiateViewControllerWithIdentifier("hamburgerMenu") as UIViewController
+            window?.rootViewController = menuController
         }
         return true
     }
