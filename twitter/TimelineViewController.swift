@@ -8,12 +8,21 @@
 
 import UIKit
 
+let menuAnimationDuration = 0.2
+
 class TimelineViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, replyDelegate {
 
     @IBOutlet weak var tableView: UITableView!
     var tweets:[Tweet]?
     var refreshControl:UIRefreshControl?
     var replyTweet: Tweet?
+    var menuVC: MenuViewController!
+    @IBOutlet var panGesture: UIPanGestureRecognizer!
+    var menuBeginOrigin:CGPoint!
+    var panGestureBeginOrigin:CGPoint!
+    @IBOutlet var containerView: UIView!
+    @IBOutlet weak var timelineView: UIView!
+    
     
     @IBAction func onLogout(sender: AnyObject) {
         User.currentUser?.logout()
@@ -26,6 +35,52 @@ class TimelineViewController: UIViewController, UITableViewDelegate, UITableView
     
     func refresh() {
         tableView.reloadData()
+    }
+    
+    
+    @IBAction func doSwipe(panGestureRecognizer: UIPanGestureRecognizer) {
+        let point = panGestureRecognizer.translationInView(self.containerView)
+        let velocity = panGestureRecognizer.velocityInView(self.containerView)
+        
+        if panGestureRecognizer.state == UIGestureRecognizerState.Began {
+            //println("Gesture began at: \(point)")
+            menuBeginOrigin = menuVC.view.center
+            panGestureBeginOrigin = point
+        } else if panGestureRecognizer.state == UIGestureRecognizerState.Changed {
+            println("Gesture changed at: \(menuVC.view.center.x)")
+            menuVC.view.center.x = menuBeginOrigin.x + point.x - panGestureBeginOrigin.x
+            if menuVC.view.center.x < -menuVC.view.frame.width / 2.0 {
+                menuVC.view.center.x = -menuVC.view.frame.width / 2.0
+            }
+            self.timelineView.center.x = menuVC.view.center.x + menuVC.view.frame.width
+        } else if panGestureRecognizer.state == UIGestureRecognizerState.Ended {
+            //snap it on to the side
+            if velocity.x < 0 {
+                UIView.animateWithDuration(menuAnimationDuration, animations: { () -> Void in
+                    self.menuVC.view.center.x = -self.menuVC.view.frame.width / 2.0
+                }, completion: { (done: Bool) -> Void in
+                    
+                })
+                
+                UIView.animateWithDuration(menuAnimationDuration, animations: { () -> Void in
+                    self.timelineView.center.x = self.timelineView.frame.width / 2.0
+                    }, completion: { (done: Bool) -> Void in
+                        
+                })
+
+            } else {
+                UIView.animateWithDuration(menuAnimationDuration, animations: { () -> Void in
+                    self.menuVC.view.center.x = self.menuVC.view.frame.width / 2.0
+                }, completion: { (done: Bool) -> Void in
+                        
+                })
+                UIView.animateWithDuration(menuAnimationDuration, animations: { () -> Void in
+                    self.timelineView.center.x = self.timelineView.frame.width * 1.5
+                }, completion: { (done: Bool) -> Void in
+                        
+                })
+            }
+        }
     }
     
     func fetch() {
@@ -48,6 +103,9 @@ class TimelineViewController: UIViewController, UITableViewDelegate, UITableView
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        menuVC = storyboard?.instantiateViewControllerWithIdentifier("hamburgerMenu") as MenuViewController
+        self.containerView.addSubview(menuVC.view)
+        menuVC.view.center.x = -menuVC.view.frame.size.width / 2.0
         fetch()
         tableView.estimatedRowHeight = 92.0
         tableView.rowHeight = UITableViewAutomaticDimension
