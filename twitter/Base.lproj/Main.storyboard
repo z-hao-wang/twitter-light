@@ -173,15 +173,24 @@
                             </navigationBar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="ysc-0k-xUK" firstAttribute="leading" secondItem="itn-MG-yiI" secondAttribute="leadingMargin" constant="-16" id="2z8-BN-yNW"/>
                             <constraint firstItem="ysc-0k-xUK" firstAttribute="top" secondItem="itn-MG-yiI" secondAttribute="topMargin" id="oXH-VS-3Tf"/>
                             <constraint firstAttribute="trailingMargin" secondItem="ysc-0k-xUK" secondAttribute="trailing" constant="-16" id="oyC-kA-GPx"/>
                         </constraints>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="idh-Jv-e99" appends="YES" id="vQq-XE-kRf"/>
+                        </connections>
                     </view>
                     <navigationItem key="navigationItem" title="Profile" id="YPD-6e-uCp"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="K7V-UU-jMF" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <panGestureRecognizer minimumNumberOfTouches="1" id="idh-Jv-e99">
+                    <connections>
+                        <action selector="doSwipe:" destination="K8l-j1-WPG" id="YsH-s2-9r9"/>
+                    </connections>
+                </panGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="979" y="784"/>
         </scene>

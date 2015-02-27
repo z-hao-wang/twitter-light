@@ -24,6 +24,7 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     var timeLineViewController: TimelineViewController!
     var profileViewController: ProfileViewController!
     var currentViewController: UIViewController!
+    var menuItems = ["Home", "Profile", "Mentions"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,7 +35,7 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
         viewContainer.addSubview(timeLineViewController.view)
         timeLineViewController.view.center = viewContainer.center
         currentViewController = timeLineViewController*/
-        navigateTo("timeline")
+        navigateTo(menuItems[0])
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -70,7 +71,7 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 menuView.center.x = menuView.frame.width / 2.0
                 panGestureBeginOrigin = point //reset start pos
             }
-            timeLineViewController.view.center.x = menuView.center.x + menuView.frame.width
+            currentViewController.view.center.x = menuView.center.x + menuView.frame.width
         } else if panGestureRecognizer.state == UIGestureRecognizerState.Ended {
             //snap it on to the side
             if velocity.x < 0 {
@@ -81,7 +82,8 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 })
                 
                 UIView.animateWithDuration(menuAnimationDuration, animations: { () -> Void in
-                    self.currentViewController.view.center.x = self.currentViewController.view.frame.width / 2.0
+                    //put to center
+                    self.currentViewController.view.center = self.viewContainer.center
                     }, completion: { (done: Bool) -> Void in
                         
                 })
@@ -93,7 +95,8 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
                         
                 })
                 UIView.animateWithDuration(menuAnimationDuration, animations: { () -> Void in
-                    self.currentViewController.view.center.x = self.currentViewController.view.frame.width * 1.5
+                    //put to right side
+                    self.currentViewController.view.center.x = self.viewContainer.frame.width * 1.5
                     }, completion: { (done: Bool) -> Void in
                         
                 })
@@ -112,14 +115,14 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     func navigateTo(pageName: String, animated: Bool = false) {
         removeViewController()
         switch pageName {
-            case "timeline":
+            case menuItems[0]:
                 if timeLineViewController == nil {
                     timeLineViewController = storyboard?.instantiateViewControllerWithIdentifier("timelineViewController") as TimelineViewController
                     timeLineViewController.delegate = self
                 }
                 currentViewController = timeLineViewController
                 
-            case "profile":
+            case menuItems[1]:
                 if profileViewController == nil {
                     profileViewController = storyboard?.instantiateViewControllerWithIdentifier("profileViewController") as ProfileViewController
                     profileViewController.delegate = self
@@ -135,7 +138,8 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
             self.menuView.center.x = -self.menuView.frame.width / 2.0
             self.currentViewController.view.center = self.viewContainer.center
         }, completion: { (done: Bool) -> Void in
-                
+            //have to set this again after animation...
+            self.menuView.center.x = -self.menuView.frame.width / 2.0
         })
     }
     
@@ -146,12 +150,8 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var cell = tableView.dequeueReusableCellWithIdentifier("menuCell") as MenuTableViewCell
         switch indexPath.row {
-        case 0:
-            cell.menuLabel.text = "Home"
-        case 1:
-            cell.menuLabel.text = "Profile"
-        case 2:
-            cell.menuLabel.text = "Mentions"
+        case 0,1,2:
+            cell.menuLabel.text = menuItems[indexPath.row]
         default:
             cell.menuLabel.text = ""
         }
@@ -163,9 +163,11 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if indexPath.row == 1 {
-            navigateTo("profile", animated: true)
-            //TODO: Animate it
+        switch indexPath.row {
+            case 0,1,2:
+                navigateTo(menuItems[indexPath.row], animated: true)
+            default:
+                return
         }
     }
 

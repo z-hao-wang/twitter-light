@@ -22,6 +22,9 @@ class ProfileViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    @IBAction func doSwipe(sender: UIPanGestureRecognizer) {
+        delegate?.processSwipe(sender)
+    }
 
     /*
     // MARK: - Navigation
