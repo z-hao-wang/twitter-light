@@ -28,14 +28,7 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //init timeline view controller
-        /*timeLineViewController = storyboard?.instantiateViewControllerWithIdentifier("timelineViewController") as TimelineViewController
-        addChildViewController(timeLineViewController)
-        timeLineViewController.delegate = self
-        viewContainer.addSubview(timeLineViewController.view)
-        timeLineViewController.view.center = viewContainer.center
-        currentViewController = timeLineViewController*/
-        navigateTo(menuItems[0])
+        navigateTo(menuItems[0], animated: false)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -127,6 +120,7 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
                     profileViewController = storyboard?.instantiateViewControllerWithIdentifier("profileViewController") as ProfileViewController
                     profileViewController.delegate = self
                     profileViewController.view.center.x = viewContainer.frame.width * 1.5
+                    profileViewController.update(newUser: User.currentUser)
                 }
                 currentViewController = profileViewController
             default:
@@ -134,13 +128,19 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
         addChildViewController(currentViewController)
         viewContainer.addSubview(currentViewController.view)
-        UIView.animateWithDuration(menuAnimationDuration, animations: { () -> Void in
+        if animated {
+            UIView.animateWithDuration(menuAnimationDuration, animations: { () -> Void in
+                self.menuView.center.x = -self.menuView.frame.width / 2.0
+                self.currentViewController.view.center = self.viewContainer.center
+                }, completion: { (done: Bool) -> Void in
+                    //have to set this again after animation...
+                    self.menuView.center.x = -self.menuView.frame.width / 2.0
+            })
+        } else {
             self.menuView.center.x = -self.menuView.frame.width / 2.0
             self.currentViewController.view.center = self.viewContainer.center
-        }, completion: { (done: Bool) -> Void in
-            //have to set this again after animation...
-            self.menuView.center.x = -self.menuView.frame.width / 2.0
-        })
+        }
+        
     }
     
     @IBAction func doSwipe(panGestureRecognizer: UIPanGestureRecognizer) {

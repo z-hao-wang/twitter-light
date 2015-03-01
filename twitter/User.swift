@@ -58,4 +58,18 @@ class User: NSObject {
             NSUserDefaults.standardUserDefaults().synchronize()
         }
     }
+    
+    func getAttr(attr: String) -> Int? {
+        if let attrVal = dictionary[attr] as? Int {
+            return attrVal
+        }
+        return nil
+    }
+    
+    func getAttr(attr: String) -> String? {
+        if let attrVal = dictionary[attr] as? String {
+            return attrVal
+        }
+        return nil
+    }
 }

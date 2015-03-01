@@ -10,6 +10,8 @@ import UIKit
 
 class ProfileViewController: UIViewController {
 
+    var data: User?
+    @IBOutlet weak var userNameLabel: UILabel!
     var delegate: swipeDelegate?
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,6 +26,16 @@ class ProfileViewController: UIViewController {
     
     @IBAction func doSwipe(sender: UIPanGestureRecognizer) {
         delegate?.processSwipe(sender)
+    }
+    
+    func update(newUser: User? = nil) {
+        if newUser != nil {
+            data = newUser
+        }
+        //update the view
+        if data != nil {
+            userNameLabel.text = data!.name!
+        }
     }
 
     /*
