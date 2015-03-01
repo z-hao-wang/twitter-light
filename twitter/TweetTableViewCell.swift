@@ -11,13 +11,14 @@ import UIKit
 protocol replyDelegate {
     func onReply(tweet: Tweet)
     func refresh()
+    func navToProfile(user: User?)
 }
 class TweetTableViewCell: UITableViewCell {
 
     var delegate: replyDelegate?
     var tweet: Tweet?
     @IBOutlet weak var tweetText: UILabel!
-    @IBOutlet weak var userName: UILabel!
+    @IBOutlet weak var userName: UIButton!
     
     @IBOutlet weak var retweetButton: UIButton!
     @IBOutlet weak var favoriteButton: UIButton!
@@ -34,10 +35,13 @@ class TweetTableViewCell: UITableViewCell {
         self.selectionStyle = .None
     }
     
+    @IBAction func didClickUserName(sender: UIButton) {
+        delegate?.navToProfile(tweet?.user)
+    }
     func update() {
         //clear
         if let tweetUn = tweet {
-            self.userName.text = tweetUn.user!.name
+            self.userName.setTitle(tweetUn.user!.name, forState: .Normal)
             self.tweetText.text = tweetUn.text
             self.timeStamp.text = tweetUn.createdTimeToNow()
             if tweetUn.retweetCount != nil {

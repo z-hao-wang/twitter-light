@@ -12,14 +12,18 @@ class ProfileViewController: UIViewController {
 
     var data: User?
     @IBOutlet weak var userNameLabel: UILabel!
+    @IBOutlet weak var tweetsCount: UILabel!
+    
+    @IBOutlet weak var followersCount: UILabel!
+    @IBOutlet weak var followingCount: UILabel!
+
     var delegate: swipeDelegate?
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
     }
-
-    override func didReceiveMemoryWarning() {
+        override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
@@ -35,6 +39,12 @@ class ProfileViewController: UIViewController {
         //update the view
         if data != nil {
             userNameLabel.text = data!.name!
+            let statuses_count:Int = data!.getAttr("statuses_count")!
+            tweetsCount.text = String(statuses_count)
+            let followers_count:Int = data!.getAttr("followers_count")!
+            followersCount.text = String(followers_count)
+            let friends_count:Int = data!.getAttr("friends_count")!
+            followingCount.text = String(friends_count)
         }
     }
 

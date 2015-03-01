@@ -34,57 +34,12 @@ class TimelineViewController: UIViewController, UITableViewDelegate, UITableView
         self.performSegueWithIdentifier("composeSegue", sender: self)
     }
     
-    func refresh() {
-        tableView.reloadData()
+    func navToProfile(user: User?) {
+        self.delegate?.navigateToProfile(true, user: user)
     }
     
-    func processSwipe(panGestureRecognizer: UIPanGestureRecognizer) {
-        let point = panGestureRecognizer.translationInView(self.containerView)
-        let velocity = panGestureRecognizer.velocityInView(self.containerView)
-        
-        if panGestureRecognizer.state == UIGestureRecognizerState.Began {
-            //println("Gesture began at: \(point)")
-            menuBeginOrigin = menuVC.view.center
-            panGestureBeginOrigin = point
-        } else if panGestureRecognizer.state == UIGestureRecognizerState.Changed {
-            println("Gesture changed at: \(menuVC.view.center.x)")
-            menuVC.view.center.x = menuBeginOrigin.x + point.x - panGestureBeginOrigin.x
-            if menuVC.view.center.x < -menuVC.view.frame.width / 2.0 {
-                menuVC.view.center.x = -menuVC.view.frame.width / 2.0
-                panGestureBeginOrigin = point //reset start pos
-            } else if menuVC.view.center.x > menuVC.view.frame.width / 2.0 {
-                menuVC.view.center.x = menuVC.view.frame.width / 2.0
-                panGestureBeginOrigin = point //reset start pos
-            }
-            self.timelineView.center.x = menuVC.view.center.x + menuVC.view.frame.width
-        } else if panGestureRecognizer.state == UIGestureRecognizerState.Ended {
-            //snap it on to the side
-            if velocity.x < 0 {
-                UIView.animateWithDuration(menuAnimationDuration, animations: { () -> Void in
-                    self.menuVC.view.center.x = -self.menuVC.view.frame.width / 2.0
-                    }, completion: { (done: Bool) -> Void in
-                        
-                })
-                
-                UIView.animateWithDuration(menuAnimationDuration, animations: { () -> Void in
-                    self.timelineView.center.x = self.timelineView.frame.width / 2.0
-                    }, completion: { (done: Bool) -> Void in
-                        
-                })
-                
-            } else {
-                UIView.animateWithDuration(menuAnimationDuration, animations: { () -> Void in
-                    self.menuVC.view.center.x = self.menuVC.view.frame.width / 2.0
-                    }, completion: { (done: Bool) -> Void in
-                        
-                })
-                UIView.animateWithDuration(menuAnimationDuration, animations: { () -> Void in
-                    self.timelineView.center.x = self.timelineView.frame.width * 1.5
-                    }, completion: { (done: Bool) -> Void in
-                        
-                })
-            }
-        }
+    func refresh() {
+        tableView.reloadData()
     }
     
     @IBAction func doSwipe(panGestureRecognizer: UIPanGestureRecognizer) {

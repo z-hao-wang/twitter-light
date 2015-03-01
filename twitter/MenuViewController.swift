@@ -9,6 +9,7 @@
 import UIKit
 protocol swipeDelegate {
     func processSwipe(panGestureRecognizer: UIPanGestureRecognizer)
+    func navigateToProfile(animated: Bool, user: User?)
 }
 
 class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, swipeDelegate {
@@ -25,6 +26,7 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     var profileViewController: ProfileViewController!
     var currentViewController: UIViewController!
     var menuItems = ["Home", "Profile", "Mentions"]
+    var profileUser: User?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,6 +36,8 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     override func viewWillAppear(animated: Bool) {
         //set menu offset, hide it to the left
         menuView.center.x = -menuView.frame.size.width / 2.0
+        screenName.text = User.currentUser!.name!
+        profileImage.setImageWithURL(NSURL(string: User.currentUser!.profileImageURL!))
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -105,6 +109,11 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
     }
     
+    func navigateToProfile(animated: Bool, user: User?) {
+        profileUser = user
+        navigateTo(menuItems[1], animated: animated)
+    }
+    
     func navigateTo(pageName: String, animated: Bool = false) {
         removeViewController()
         switch pageName {
@@ -120,8 +129,8 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
                     profileViewController = storyboard?.instantiateViewControllerWithIdentifier("profileViewController") as ProfileViewController
                     profileViewController.delegate = self
                     profileViewController.view.center.x = viewContainer.frame.width * 1.5
-                    profileViewController.update(newUser: User.currentUser)
                 }
+                profileViewController.update(newUser: profileUser)
                 currentViewController = profileViewController
             default:
                 return
@@ -165,6 +174,7 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         switch indexPath.row {
             case 0,1,2:
+                profileUser = User.currentUser
                 navigateTo(menuItems[indexPath.row], animated: true)
             default:
                 return
