@@ -14,6 +14,7 @@ let userDidLoginNotification = "UserDidLoginNotification"
 let userDidLogoutNotification = "UserDidLogoutNotification"
 class User: NSObject {
     
+    var id: Int?
     var name: String?
     var screenName: String?
     var profileImageURL: String?
@@ -26,6 +27,7 @@ class User: NSObject {
         screenName = dictionary["screen_name"]  as? String
         profileImageURL = dictionary["profile_image_url"]  as? String
         tagline = dictionary["description"]  as? String
+        id = dictionary["id"] as? Int
     }
     
     func logout() {

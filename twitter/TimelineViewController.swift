@@ -8,8 +8,6 @@
 
 import UIKit
 
-let menuAnimationDuration = 0.2
-
 class TimelineViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, replyDelegate {
 
     @IBOutlet weak var tableView: UITableView!
@@ -31,7 +29,7 @@ class TimelineViewController: UIViewController, UITableViewDelegate, UITableView
     
     @IBAction func onCompose(sender: AnyObject) {
         replyTweet = nil
-        self.performSegueWithIdentifier("composeSegue", sender: self)
+    self.performSegueWithIdentifier("composeSegue", sender: self)
     }
     
     func navToProfile(user: User?) {

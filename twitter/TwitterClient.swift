@@ -53,6 +53,18 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
         }
     }
     
+    func fetchUserTimelineWithCompletion(userId: Int, complete: (tweets: [Tweet]?, error: NSError?) -> ()) {
+        self.GET("1.1/statuses/user_timeline.json", parameters: ["user_id": userId], success: { (opreation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
+            println(response)
+            var tweets = Tweet.tweetsWithArray(response as [NSDictionary])
+            complete(tweets: tweets, error: nil)
+        }, failure: { (opration: AFHTTPRequestOperation!, error: NSError!) -> Void in
+            complete(tweets: nil, error: error)
+        })
+
+    }
+    
+    // home timeline
     func fetchTweetsWithCompletion(complete: (tweets: [Tweet]?, error: NSError?) -> ()) {
         self.GET("1.1/statuses/home_timeline.json", parameters: nil, success: { (opreation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
             println(response)
@@ -60,6 +72,7 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
             complete(tweets: tweets, error: nil)
         }, failure: { (opration: AFHTTPRequestOperation!, error: NSError!) -> Void in
             complete(tweets: nil, error: error)
+            println("Fetch error: \(error)")
         })
     }
     

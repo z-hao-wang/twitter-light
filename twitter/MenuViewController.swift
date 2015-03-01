@@ -7,6 +7,11 @@
 //
 
 import UIKit
+
+//menu animation duration
+let menuAnimationDuration = 0.2
+let MenuRightGap:CGFloat = 50.0
+
 protocol swipeDelegate {
     func processSwipe(panGestureRecognizer: UIPanGestureRecognizer)
     func navigateToProfile(animated: Bool, user: User?)
@@ -19,7 +24,7 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     @IBOutlet weak var profileImage: UIImageView!
     @IBOutlet weak var screenName: UILabel!
     @IBOutlet weak var tableView: UITableView!
-    var menuBeginOrigin:CGPoint!
+    var currentViewBeginOrigin:CGPoint!
     var panGestureBeginOrigin:CGPoint!
     var delegate:swipeDelegate?
     var timeLineViewController: TimelineViewController!
@@ -27,6 +32,8 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     var currentViewController: UIViewController!
     var menuItems = ["Home", "Profile", "Mentions"]
     var profileUser: User?
+    var firstTimeLoad = false
+    var currentViewMaxCenterX:CGFloat = 0.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,14 +42,14 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     override func viewWillAppear(animated: Bool) {
         //set menu offset, hide it to the left
-        menuView.center.x = -menuView.frame.size.width / 2.0
         screenName.text = User.currentUser!.name!
         profileImage.setImageWithURL(NSURL(string: User.currentUser!.profileImageURL!))
     }
     
-    override func viewDidAppear(animated: Bool) {
-        //set menu offset, hide it to the left
-        menuView.center.x = -menuView.frame.size.width / 2.0
+    //This is the apropiate place to modify view attr after view is rendered 
+    override func viewDidLayoutSubviews() {
+        println("menuView center at viewDidLayoutSubviews: \(menuView.center)")
+        currentViewMaxCenterX = viewContainer.frame.width * 1.5 - MenuRightGap
     }
 
     override func didReceiveMemoryWarning() {
@@ -56,45 +63,35 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         if panGestureRecognizer.state == UIGestureRecognizerState.Began {
             //println("Gesture began at: \(point)")
-            menuBeginOrigin = menuView.center
+            println("menuView center at processSwipe: \(menuView.center)")
+            //menuBeginOrigin = menuView.center
             panGestureBeginOrigin = point
+            currentViewBeginOrigin = currentViewController.view.center
         } else if panGestureRecognizer.state == UIGestureRecognizerState.Changed {
-            println("Gesture changed at: \(menuView.center.x)")
-            menuView.center.x = menuBeginOrigin.x + point.x - panGestureBeginOrigin.x
-            if menuView.center.x < -menuView.frame.width / 2.0 {
-                menuView.center.x = -menuView.frame.width / 2.0
-                panGestureBeginOrigin = point //reset start pos
-            } else if menuView.center.x > menuView.frame.width / 2.0 {
-                menuView.center.x = menuView.frame.width / 2.0
+            println("Gesture changed at: \(point)")
+            if point.x > panGestureBeginOrigin.x {
+                currentViewController.view.center.x = currentViewBeginOrigin.x + point.x - panGestureBeginOrigin.x
+                if currentViewController.view.center.x > currentViewMaxCenterX {
+                    currentViewController.view.center.x = currentViewMaxCenterX
+                }
+            } else {
                 panGestureBeginOrigin = point //reset start pos
             }
-            currentViewController.view.center.x = menuView.center.x + menuView.frame.width
         } else if panGestureRecognizer.state == UIGestureRecognizerState.Ended {
             //snap it on to the side
             if velocity.x < 0 {
-                UIView.animateWithDuration(menuAnimationDuration, animations: { () -> Void in
-                    self.menuView.center.x = -self.menuView.frame.width / 2.0
-                    }, completion: { (done: Bool) -> Void in
-                        
-                })
                 
                 UIView.animateWithDuration(menuAnimationDuration, animations: { () -> Void in
                     //put to center
                     self.currentViewController.view.center = self.viewContainer.center
-                    }, completion: { (done: Bool) -> Void in
+                }, completion: { (done: Bool) -> Void in
                         
                 })
-                
             } else {
                 UIView.animateWithDuration(menuAnimationDuration, animations: { () -> Void in
-                    self.menuView.center.x = self.menuView.frame.width / 2.0
-                    }, completion: { (done: Bool) -> Void in
-                        
-                })
-                UIView.animateWithDuration(menuAnimationDuration, animations: { () -> Void in
                     //put to right side
-                    self.currentViewController.view.center.x = self.viewContainer.frame.width * 1.5
-                    }, completion: { (done: Bool) -> Void in
+                    self.currentViewController.view.center.x = self.currentViewMaxCenterX
+                }, completion: { (done: Bool) -> Void in
                         
                 })
             }
@@ -111,6 +108,7 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func navigateToProfile(animated: Bool, user: User?) {
         profileUser = user
+        //Special, if we were going to remove current view controller. this is likely to be animate to the buttom
         navigateTo(menuItems[1], animated: animated)
     }
     
@@ -138,15 +136,12 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
         addChildViewController(currentViewController)
         viewContainer.addSubview(currentViewController.view)
         if animated {
+            self.currentViewController.view.center.x = viewContainer.frame.width * 1.5
             UIView.animateWithDuration(menuAnimationDuration, animations: { () -> Void in
-                self.menuView.center.x = -self.menuView.frame.width / 2.0
                 self.currentViewController.view.center = self.viewContainer.center
-                }, completion: { (done: Bool) -> Void in
-                    //have to set this again after animation...
-                    self.menuView.center.x = -self.menuView.frame.width / 2.0
+            }, completion: { (done: Bool) -> Void in
             })
         } else {
-            self.menuView.center.x = -self.menuView.frame.width / 2.0
             self.currentViewController.view.center = self.viewContainer.center
         }
         

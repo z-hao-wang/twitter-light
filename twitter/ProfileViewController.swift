@@ -8,20 +8,26 @@
 
 import UIKit
 
-class ProfileViewController: UIViewController {
+class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
+    @IBOutlet weak var tableView: UITableView!
     var data: User?
     @IBOutlet weak var userNameLabel: UILabel!
     @IBOutlet weak var tweetsCount: UILabel!
     
     @IBOutlet weak var followersCount: UILabel!
     @IBOutlet weak var followingCount: UILabel!
+    
+    var tweets: [Tweet]?
 
     var delegate: swipeDelegate?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        tableView.estimatedRowHeight = 92.0
+        tableView.rowHeight = UITableViewAutomaticDimension
     }
         override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -30,6 +36,20 @@ class ProfileViewController: UIViewController {
     
     @IBAction func doSwipe(sender: UIPanGestureRecognizer) {
         delegate?.processSwipe(sender)
+    }
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if tweets != nil {
+            return tweets!.count
+        }
+        return 0
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        var cell = tableView.dequeueReusableCellWithIdentifier("tweetCell") as TweetTableViewCell
+        cell.tweet = tweets![indexPath.row]
+        cell.update()
+        return cell
     }
     
     func update(newUser: User? = nil) {
@@ -45,6 +65,13 @@ class ProfileViewController: UIViewController {
             followersCount.text = String(followers_count)
             let friends_count:Int = data!.getAttr("friends_count")!
             followingCount.text = String(friends_count)
+            let userId = data!.id
+            TwitterClient.getInstance.fetchUserTimelineWithCompletion(userId!, complete: { (tweets, error) -> () in
+                println(tweets)
+                self.tweets = tweets
+                self.tableView.reloadData()
+            })
+            
         }
     }
 
