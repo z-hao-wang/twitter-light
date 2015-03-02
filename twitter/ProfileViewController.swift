@@ -13,6 +13,9 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     @IBOutlet weak var tableView: UITableView!
     var data: User?
     @IBOutlet weak var userNameLabel: UILabel!
+    @IBOutlet weak var screenNameLabel: UILabel!
+
+    @IBOutlet weak var profileImage: UIImageView!
     @IBOutlet weak var tweetsCount: UILabel!
     
     @IBOutlet weak var followersCount: UILabel!
@@ -20,7 +23,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     var tweets: [Tweet]?
 
-    var delegate: swipeDelegate?
+        var delegate: swipeDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,6 +62,8 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         }
         //update the view
         if data != nil {
+            tweets = [] //reset
+            self.tableView.reloadData()
             userNameLabel.text = data!.name!
             let statuses_count:Int = data!.getAttr("statuses_count")!
             tweetsCount.text = String(statuses_count)
@@ -67,12 +72,13 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             let friends_count:Int = data!.getAttr("friends_count")!
             followingCount.text = String(friends_count)
             let userId = data!.id
+            profileImage.setImageWithURL(NSURL(string: data!.profileImageURL!))
+            screenNameLabel.text = data!.screenName!
             TwitterClient.getInstance.fetchUserTimelineWithCompletion(userId!, complete: { (tweets, error) -> () in
                 println(tweets)
                 self.tweets = tweets
                 self.tableView.reloadData()
             })
-            
         }
     }
 

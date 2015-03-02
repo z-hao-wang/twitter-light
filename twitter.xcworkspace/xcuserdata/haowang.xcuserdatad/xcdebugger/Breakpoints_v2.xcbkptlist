@@ -688,11 +688,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "twitter/ProfileViewController.swift"
-            timestampString = "446946524.355745"
+            timestampString = "446948029.026955"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "76"
-            endingLineNumber = "76"
+            startingLineNumber = "82"
+            endingLineNumber = "82"
             landmarkName = "update(newUser:)"
             landmarkType = "5">
          </BreakpointContent>
