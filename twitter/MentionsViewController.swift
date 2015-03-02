@@ -1,42 +1,33 @@
 //
-//  ProfileViewController.swift
+//  MentionsViewController.swift
 //  twitter
 //
-//  Created by Hao Wang on 2/26/15.
+//  Created by Hao Wang on 3/1/15.
 //  Copyright (c) 2015 Hao Wang. All rights reserved.
 //
 
 import UIKit
 
-class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
+class MentionsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+    
     @IBOutlet weak var tableView: UITableView!
-    var data: User?
-    @IBOutlet weak var userNameLabel: UILabel!
-    @IBOutlet weak var tweetsCount: UILabel!
-    
-    @IBOutlet weak var followersCount: UILabel!
-    @IBOutlet weak var followingCount: UILabel!
-    
     var tweets: [Tweet]?
-
     var delegate: swipeDelegate?
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
         tableView.estimatedRowHeight = 92.0
         tableView.rowHeight = UITableViewAutomaticDimension
+        fetch()
     }
-    
+
+    @IBAction func doSwipe(sender: UIPanGestureRecognizer) {
+        delegate?.processSwipe(sender)
+    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }
-    
-    @IBAction func doSwipe(sender: UIPanGestureRecognizer) {
-        delegate?.processSwipe(sender)
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -53,28 +44,15 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         return cell
     }
     
-    func update(newUser: User? = nil) {
-        if newUser != nil {
-            data = newUser
-        }
-        //update the view
-        if data != nil {
-            userNameLabel.text = data!.name!
-            let statuses_count:Int = data!.getAttr("statuses_count")!
-            tweetsCount.text = String(statuses_count)
-            let followers_count:Int = data!.getAttr("followers_count")!
-            followersCount.text = String(followers_count)
-            let friends_count:Int = data!.getAttr("friends_count")!
-            followingCount.text = String(friends_count)
-            let userId = data!.id
-            TwitterClient.getInstance.fetchUserTimelineWithCompletion(userId!, complete: { (tweets, error) -> () in
-                println(tweets)
+    func fetch() {
+        TwitterClient.getInstance.fetchMentionsTimelineWithCompletion { (tweets, error) -> () in
+            if error == nil {
                 self.tweets = tweets
                 self.tableView.reloadData()
-            })
-            
+            }
         }
     }
+
 
     /*
     // MARK: - Navigation

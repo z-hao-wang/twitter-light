@@ -19,7 +19,6 @@ protocol swipeDelegate {
 
 class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, swipeDelegate {
 
-    @IBOutlet weak var menuView: UIView!
     @IBOutlet var viewContainer: UIView! //The view container. the position should never change
     @IBOutlet weak var profileImage: UIImageView!
     @IBOutlet weak var screenName: UILabel!
@@ -29,6 +28,7 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     var delegate:swipeDelegate?
     var timeLineViewController: TimelineViewController!
     var profileViewController: ProfileViewController!
+    var mentionsViewController: MentionsViewController!
     var currentViewController: UIViewController!
     var menuItems = ["Home", "Profile", "Mentions"]
     var profileUser: User?
@@ -48,7 +48,6 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     //This is the apropiate place to modify view attr after view is rendered 
     override func viewDidLayoutSubviews() {
-        println("menuView center at viewDidLayoutSubviews: \(menuView.center)")
         currentViewMaxCenterX = viewContainer.frame.width * 1.5 - MenuRightGap
     }
 
@@ -63,24 +62,21 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         if panGestureRecognizer.state == UIGestureRecognizerState.Began {
             //println("Gesture began at: \(point)")
-            println("menuView center at processSwipe: \(menuView.center)")
-            //menuBeginOrigin = menuView.center
             panGestureBeginOrigin = point
             currentViewBeginOrigin = currentViewController.view.center
         } else if panGestureRecognizer.state == UIGestureRecognizerState.Changed {
             println("Gesture changed at: \(point)")
-            if point.x > panGestureBeginOrigin.x {
-                currentViewController.view.center.x = currentViewBeginOrigin.x + point.x - panGestureBeginOrigin.x
-                if currentViewController.view.center.x > currentViewMaxCenterX {
-                    currentViewController.view.center.x = currentViewMaxCenterX
-                }
-            } else {
+            currentViewController.view.center.x = currentViewBeginOrigin.x + point.x - panGestureBeginOrigin.x
+            if currentViewController.view.center.x > currentViewMaxCenterX {
+                currentViewController.view.center.x = currentViewMaxCenterX
+                panGestureBeginOrigin = point //reset start pos
+            } else if currentViewController.view.center.x < viewContainer.center.x {
+                currentViewController.view.center.x = viewContainer.center.x
                 panGestureBeginOrigin = point //reset start pos
             }
         } else if panGestureRecognizer.state == UIGestureRecognizerState.Ended {
-            //snap it on to the side
+            //snap it on to the side or center
             if velocity.x < 0 {
-                
                 UIView.animateWithDuration(menuAnimationDuration, animations: { () -> Void in
                     //put to center
                     self.currentViewController.view.center = self.viewContainer.center
@@ -108,7 +104,6 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func navigateToProfile(animated: Bool, user: User?) {
         profileUser = user
-        //Special, if we were going to remove current view controller. this is likely to be animate to the buttom
         navigateTo(menuItems[1], animated: animated)
     }
     
@@ -130,6 +125,13 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 }
                 profileViewController.update(newUser: profileUser)
                 currentViewController = profileViewController
+            case menuItems[2]:
+                if mentionsViewController == nil {
+                    mentionsViewController = storyboard?.instantiateViewControllerWithIdentifier("mentionsViewController") as MentionsViewController
+                    mentionsViewController.delegate = self
+                    mentionsViewController.view.center.x = viewContainer.frame.width * 1.5
+                }
+                currentViewController = mentionsViewController
             default:
                 return
         }
@@ -169,7 +171,7 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         switch indexPath.row {
             case 0,1,2:
-                profileUser = User.currentUser
+                profileUser = User.currentUser //reset profile user regardless
                 navigateTo(menuItems[indexPath.row], animated: true)
             default:
                 return

@@ -55,3 +55,6 @@ Time spent: 12 hours
 - [ ] Tap account to switch to
 - [ ] Include a plus button to Add an Account
 - [ ] Swipe to delete an account
+
+### Walkthrough Part 2
+![Video Walkthrough](video_walkthrough_2.gif)

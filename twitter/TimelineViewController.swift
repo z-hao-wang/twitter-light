@@ -62,8 +62,6 @@ class TimelineViewController: UIViewController, UITableViewDelegate, UITableView
         self.tableView.reloadData()
     }
     
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         fetch()
